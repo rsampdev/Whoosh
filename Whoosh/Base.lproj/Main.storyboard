@@ -100,6 +100,7 @@
                         <outlet property="secondSentenceLabelTopConstraint" destination="dgW-qF-YMq" id="zBI-tW-0TT"/>
                         <outlet property="sentenceCountLabel" destination="UFA-LX-0Ic" id="0Im-R2-2CU"/>
                         <outlet property="storeTextButton" destination="L6G-Qd-md0" id="5fU-t1-pST"/>
+                        <outlet property="textField" destination="3M0-VY-W9c" id="2E0-zU-q63"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

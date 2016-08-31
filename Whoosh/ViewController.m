@@ -11,11 +11,14 @@
 @interface ViewController () <UITextFieldDelegate>
 
 @property (nonatomic, strong) IBOutlet UILabel * sentenceCountLabel;
+@property (nonatomic, strong) IBOutlet UITextField * textField;
 @property (nonatomic, strong) IBOutlet UIButton * storeTextButton;
 @property (strong, nonatomic) IBOutlet UILabel * firstSentenceLabel;
-@property (strong, nonatomic) IBOutlet NSLayoutConstraint *firstSentenceLabelTopConstraint;
 @property (strong, nonatomic) IBOutlet UILabel * secondSentenceLabel;
-@property (strong, nonatomic) IBOutlet NSLayoutConstraint *secondSentenceLabelTopConstraint;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint * firstSentenceLabelTopConstraint;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint * secondSentenceLabelTopConstraint;
+@property (nonatomic) CGFloat currentConstantFirstSentence;
+@property (nonatomic) CGFloat currentConstantSecondSentence;
 @property (nonatomic, strong) NSString * currentSentence;
 @property (nonatomic, strong) NSString * sentenceOne;
 @property (nonatomic, strong) NSString * sentenceTwo;
@@ -31,6 +34,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.textField.delegate = self;
+    
     self.currentSentence = nil;
     self.sentenceOne = nil;
     self.sentenceTwo = nil;
@@ -38,6 +43,9 @@
     self.firstSentenceLabel.layer.zPosition = -1;
     self.secondSentenceLabel.adjustsFontSizeToFitWidth = true;
     self.secondSentenceLabel.layer.zPosition = -2;
+    
+    self.currentConstantFirstSentence = self.firstSentenceLabelTopConstraint.constant;
+    self.currentConstantSecondSentence = self.firstSentenceLabelTopConstraint.constant;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -51,22 +59,43 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
+    [self storeTextIntoSentence:self.storeTextButton];
     return YES;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
     self.currentSentence = textField.text;
+    textField.text = @"";
+}
+
+- (void)resetState {
+    self.currentSentence = nil;
+    self.sentenceOne = nil;
+    self.sentenceTwo = nil;
+    self.firstSentenceLabel.layer.zPosition = -1;
+    self.firstSentenceLabel.backgroundColor = [UIColor clearColor];
+    self.secondSentenceLabel.layer.zPosition = -1;
+    self.secondSentenceLabel.backgroundColor = [UIColor clearColor];
+    self.firstSentenceLabelTopConstraint.constant = self.currentConstantFirstSentence;
+    self.secondSentenceLabelTopConstraint.constant = self.currentConstantSecondSentence;
+    self.sentenceCountLabel.hidden = NO;
+    self.textField.hidden = NO;
+    self.storeTextButton.hidden = NO;
+
 }
 
 - (void)animateLabels {
     self.view.backgroundColor = [UIColor blackColor];
+    self.sentenceCountLabel.hidden = YES;
+    self.textField.hidden = YES;
+    self.storeTextButton.hidden = YES;
     self.sentenceCountLabel.text = @"No sentence stored.";
     [self.storeTextButton setTitle:@"Store Text" forState:UIControlStateNormal];
     
-    CGFloat currentConstantFirstSentence = self.firstSentenceLabelTopConstraint.constant;
-    CGFloat targetConstantFirstSentence = currentConstantFirstSentence + self.view.frame.size.height;
-    CGFloat currentConstantSecondSentence = self.firstSentenceLabelTopConstraint.constant;
-    CGFloat targetConstantSecondSentence = currentConstantSecondSentence + self.view.frame.size.height;
+    CGFloat targetConstantFirstSentence = self.currentConstantFirstSentence + self.view.frame.size.height;
+    CGFloat targetConstantSecondSentence = self.currentConstantSecondSentence + self.view.frame.size.height;
+    
+    [self.view layoutSubviews];
     
     self.firstSentenceLabel.layer.zPosition = 10;
     self.firstSentenceLabel.backgroundColor = [UIColor blueColor];
@@ -85,15 +114,7 @@
         [self.view layoutSubviews];
     } completion:^(BOOL finished){
         if (finished) {
-            self.currentSentence = nil;
-            self.sentenceOne = nil;
-            self.sentenceTwo = nil;
-            self.firstSentenceLabel.layer.zPosition = -1;
-            self.firstSentenceLabel.backgroundColor = [UIColor clearColor];
-            self.secondSentenceLabel.layer.zPosition = -1;
-            self.secondSentenceLabel.backgroundColor = [UIColor clearColor];
-            self.firstSentenceLabelTopConstraint.constant = currentConstantFirstSentence;
-            self.secondSentenceLabelTopConstraint.constant = currentConstantSecondSentence;
+            [self resetState];
         } else {
             NSLog(@"Whoa!");
         }
@@ -101,7 +122,7 @@
 }
 
 - (IBAction)storeTextIntoSentence:(UIButton *)sender {
-    if ([sender.currentTitle isEqualToString:@"Play Story"] && self.sentenceOne != nil && self.sentenceTwo != nil) {
+    if ([sender.currentTitle isEqualToString:@"Play Story"] && (self.sentenceOne != nil && self.sentenceTwo != nil)) {
         [self animateLabels];
     } else {
         if ([sender.currentTitle isEqualToString:@"Store Text"] && (self.sentenceOne == nil || self.sentenceTwo == nil)) {
