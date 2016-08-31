@@ -505,6 +505,7 @@
 				331DA66F1D7636D300C8D202 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		331DA6701D7636D300C8D202 /* Build configuration list for PBXNativeTarget "WhooshTests" */ = {
 			isa = XCConfigurationList;
@@ -513,6 +514,7 @@
 				331DA6721D7636D300C8D202 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		331DA6731D7636D300C8D202 /* Build configuration list for PBXNativeTarget "WhooshUITests" */ = {
 			isa = XCConfigurationList;
@@ -521,6 +523,7 @@
 				331DA6751D7636D300C8D202 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
