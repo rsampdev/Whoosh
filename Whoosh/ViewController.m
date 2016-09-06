@@ -19,7 +19,6 @@
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint * secondSentenceLabelTopConstraint;
 @property (nonatomic) CGFloat currentConstantFirstSentence;
 @property (nonatomic) CGFloat currentConstantSecondSentence;
-@property (nonatomic, strong) NSString * currentSentence;
 @property (nonatomic, strong) NSString * sentenceOne;
 @property (nonatomic, strong) NSString * sentenceTwo;
 
@@ -36,7 +35,6 @@
     
     self.textField.delegate = self;
     
-    self.currentSentence = nil;
     self.sentenceOne = nil;
     self.sentenceTwo = nil;
     self.firstSentenceLabel.adjustsFontSizeToFitWidth = true;
@@ -52,24 +50,17 @@
     [super didReceiveMemoryWarning];
 }
 
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
-    [textField resignFirstResponder];
-    return YES;
-}
-
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
-    [self storeTextIntoSentence:self.storeTextButton];
+    [self.textField resignFirstResponder];
     return YES;
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField {
-    self.currentSentence = textField.text;
-    textField.text = @"";
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+    [self.textField resignFirstResponder];
+    return YES;
 }
 
 - (void)resetState {
-    self.currentSentence = nil;
     self.sentenceOne = nil;
     self.sentenceTwo = nil;
     self.firstSentenceLabel.layer.zPosition = -1;
@@ -81,7 +72,6 @@
     self.sentenceCountLabel.hidden = NO;
     self.textField.hidden = NO;
     self.storeTextButton.hidden = NO;
-
 }
 
 - (void)animateLabels {
@@ -122,19 +112,18 @@
 }
 
 - (IBAction)storeTextIntoSentence:(UIButton *)sender {
-    if ([sender.currentTitle isEqualToString:@"Play Story"] && (self.sentenceOne != nil && self.sentenceTwo != nil)) {
+    if (self.sentenceOne != nil && self.sentenceTwo != nil) {
         [self animateLabels];
     } else {
-        if ([sender.currentTitle isEqualToString:@"Store Text"] && (self.sentenceOne == nil || self.sentenceTwo == nil)) {
-            if (self.sentenceOne == nil) {
-                self.sentenceOne = self.currentSentence;
-                self.sentenceCountLabel.text = @"One sentence stored.";
-            } else if (self.sentenceTwo == nil) {
-                self.sentenceTwo = self.currentSentence;
-                self.sentenceCountLabel.text = @"Two sentences stored.";
-                [self.storeTextButton setTitle:@"Play Story" forState:UIControlStateNormal];
-            }
-        }}
+        if (self.sentenceOne == nil) {
+            self.sentenceOne = self.textField.text;
+            self.sentenceCountLabel.text = @"One sentence stored.";
+        } else {
+            self.sentenceTwo = self.textField.text;
+            self.sentenceCountLabel.text = @"Two sentences stored.";
+            [self.storeTextButton setTitle:@"Play Story" forState:UIControlStateNormal];
+        }
+    }
 }
 
 @end
